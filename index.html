@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ER2</title>
+<meta name="description" content="Reinvención estratégica para carreras y empresas digitales.">
+<style>
+  :root{
+    --bg: #0b1220;
+    --panel: #0f1629;
+    --card: #121a31;
+    --text: #e8eefc;
+    --muted: #b9c3da;
+    --primary: #3b82f6;
+    --primary-600:#2563eb;
+    --accent: #60a5fa;
+    --border: rgba(255,255,255,0.06);
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+    --radius: 14px;
+    --space: 6vw;
+    --header-h: 64px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    background: radial-gradient(1200px 700px at 20% -10%, #112041 0%, #0b1220 60%), var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding-top: var(--header-h);
+  }
+
+  /* Header fijo */
+  header{
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    height: var(--header-h);
+    padding: 10px var(--space);
+    background: rgba(11,18,32,.95);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .navbar{ height:100%; display:flex; align-items:center; justify-content:space-between; gap:12px }
+  .brand{ display:flex; align-items:center; gap:10px; color:inherit; text-decoration:none }
+  .badge{ width:28px;height:28px;border-radius:8px;background:#1f2a44;display:grid;place-items:center;font-weight:900;color:#9ec1ff }
+  .brand-name{ font-weight:800 }
+
+  /* Menú escritorio (visible) */
+  .nav-links{ display:flex; gap:12px; flex-wrap:wrap }
+  .nav-links a{
+    color:#fff; text-decoration:none; font-weight:700;
+    padding:8px 12px; border-radius:8px; border:1px solid transparent;
+  }
+  .nav-links a:hover, .nav-links a:focus-visible{ border-color: rgba(255,255,255,.25); outline:none }
+
+  /* Botón hamburguesa (móvil) */
+  .nav-toggle{ display:none; background:transparent; border:1px solid rgba(255,255,255,.2); width:40px;height:40px;border-radius:10px; color:#fff; align-items:center; justify-content:center; }
+  .nav-toggle:focus-visible{ outline:2px solid #fff; outline-offset:2px }
+  .hamb{ position:relative; width:20px; height:2px; background:#fff; border-radius:2px; }
+  .hamb::before, .hamb::after{ content:""; position:absolute; left:0; width:20px; height:2px; background:#fff; border-radius:2px; }
+  .hamb::before{ top:-6px } .hamb::after{ top:6px }
+  .nav-toggle[aria-expanded="true"] .hamb{ background:transparent }
+  .nav-toggle[aria-expanded="true"] .hamb::before{ transform: rotate(45deg); top:0 }
+  .nav-toggle[aria-expanded="true"] .hamb::after{ transform: rotate(-45deg); top:0 }
+
+  /* Menú móvil colapsable */
+  .mobile-menu{ display:none; flex-direction:column; gap:8px; padding:10px var(--space) 12px; background: rgba(11,18,32,.95); border-bottom:1px solid rgba(255,255,255,.06) }
+  .mobile-menu a{ color:#fff; text-decoration:none; font-weight:700; padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,.12); background: rgba(19,29,53,.6) }
+  .mobile-menu a:focus-visible{ outline:2px solid #fff; outline-offset:2px }
+
+  /* Puntos de quiebre: mostrar hamburguesa y ocultar links en móvil */
+  @media (max-width: 720px){
+    .nav-links{ display:none }
+    .nav-toggle{ display:flex }
+    .mobile-menu[hidden]{ display:none }
+    .mobile-menu[aria-hidden="false"]{ display:flex }
+    /* Altura de header puede reducirse en móvil si se desea */
+    :root{ --header-h: 64px; }
+  }
+
+  /* Estilos comunes resto del sitio */
+  .btn{ display:inline-block; text-decoration:none; font-weight:700; padding:12px 16px; border-radius:10px; border:1px solid var(--border); background: linear-gradient(180deg, var(--primary) 0%, var(--primary-600) 100%); color:#fff; box-shadow:0 10px 22px rgba(37,99,235,.25); transition: transform .15s, box-shadow .2s, background .2s }
+  .btn:hover{ transform: translateY(-2px); box-shadow: 0 14px 30px rgba(37,99,235,.32) }
+  .btn:focus{ outline:2px solid #fff; outline-offset:2px }
+
+  .card{ background: linear-gradient(180deg, #131d35 0%, #0f172a 100%); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; }
+
+  .hero{ padding: 56px var(--space); display:grid; grid-template-columns:1fr; gap:24px }
+  .hero h1{ font-size: clamp(1.8rem, 3.4vw, 3rem); line-height: 1.2; margin: 0 0 10px; }
+  .hero p{ color: var(--muted); margin: 0 0 14px; font-size: clamp(1rem, 1.2vw, 1.12rem); }
+  .actions{ display:flex; gap:12px; flex-wrap:wrap; margin-top:10px }
+
+  .about-wrap{ display:grid; grid-template-columns: 120px 1fr; gap:16px; align-items:start }
+  .about-photo{ width:120px;height:120px;object-fit:cover;border-radius:12px;border:1px solid var(--border);box-shadow:0 8px 20px rgba(0,0,0,.25);background:#0f172a }
+  @media (min-width: 720px){ .about-wrap{ grid-template-columns:160px 1fr } .about-photo{ width:160px;height:160px } }
+  @media (max-width: 520px){ .about-wrap{ grid-template-columns:1fr } .about-photo{ width:140px;height:140px } }
+
+  .work{ padding:36px var(--space) } .work h2{ margin:0 0 12px }
+  .work-grid{ display:grid; grid-template-columns:1fr; gap:14px }
+  .work-card{ display:block; text-decoration:none; color:inherit; background: linear-gradient(180deg,#131d35 0%,#0f172a 100%); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; transition: box-shadow .2s ease }
+  .work-media{ display:block; width:100%; height:220px; object-fit:cover; background:#0f172a; transition: filter .2s ease }
+  .work-body{ padding:16px 16px 18px } .work-body h4{ margin:0 0 6px } .work-meta{ color:var(--muted); font-size:.95rem; margin:6px 0 0 }
+  .work-card:hover, .work-card:focus-visible{ outline:2px solid var(--primary); outline-offset:2px } .work-card:hover .work-media, .work-card:focus-visible .work-media{ filter:brightness(1.05) saturate(1.1) }
+  @media (min-width:900px){ .work-grid{ grid-template-columns:repeat(2,1fr) } .work-media{ height:240px } }
+  @media (min-width:1200px){ .work-grid{ grid-template-columns:repeat(3,1fr) } .work-media{ height:260px } }
+
+  #about, #contact{ padding:36px var(--space) }
+
+  .contact-grid{ display:grid; grid-template-columns:1fr; gap:12px; margin-top:12px }
+  .contact-card{ background: linear-gradient(180deg,#131d35 0%,#0f172a 100%); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; color:inherit; text-decoration:none; display:block; transition: box-shadow .2s ease }
+  .contact-card:hover, .contact-card:focus-visible{ outline:2px solid var(--primary); outline-offset:2px }
+  .contact-title{ font-weight:800; margin:0 0 4px } .contact-value{ color:#a7c5ff; text-decoration:underline; text-underline-offset:2px; margin:0 }
+  @media (min-width:720px){ .contact-grid{ grid-template-columns:1fr 1fr } }
+
+  footer{ padding:20px var(--space); border-top:1px solid var(--border); color:var(--muted); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="navbar">
+    <a href="#top" class="brand" aria-label="Inicio">
+      <span class="badge">ER</span>
+      <strong class="brand-name">ER2</strong>
+    </a>
+
+    <!-- Enlaces escritorio -->
+    <nav class="nav-links" aria-label="Menú principal">
+      <a href="#work">Proyectos</a>
+      <a href="#contact">Contacto</a>
+    </nav>
+
+    <!-- Botón hamburguesa móvil -->
+    <button class="nav-toggle" aria-label="Abrir menú" aria-controls="mobileMenu" aria-expanded="false">
+      <span class="hamb" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <!-- Menú móvil colapsable -->
+  <nav id="mobileMenu" class="mobile-menu" aria-hidden="true" aria-label="Menú principal móvil" hidden>
+    <a href="#work">Proyectos</a>
+    <a href="#contact">Contacto</a>
+  </nav>
+</header>
+
+<main id="top">
+  <!-- Hero -->
+  <section class="hero">
+    <div>
+      <h1>Reinvención estratégica para carreras y empresas digitales</h1>
+      <p>Impulsamos perfiles y equipos con diseño, producto y liderazgo digital. Cursos, mentorías y acompañamiento a la medida.</p>
+      <div class="actions">
+        <a class="btn" href="#contact">Hablar con un asesor</a>
+        <a class="btn" href="#work">Ver proyectos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sobre ER2 con foto -->
+  <section id="about">
+    <div class="card">
+      <h3>Sobre ER2</h3>
+      <div class="about-wrap">
+        <img class="about-photo" src="https://via.placeholder.com/300x300.jpg?text=Tu+Foto" alt="Foto de perfil de ER2">
+        <div>
+          <p style="color:var(--muted)">Soy un profesional con más de 17 años de experiencia en el ámbito de la tecnología, especializado en la implementación, soporte y optimización de soluciones empresariales. A lo largo de mi carrera he trabajado con plataformas como PeopleSoft y Oracle Cloud, liderando proyectos que han contribuido a la transformación digital de diversas organizaciones.</p>
+          <p style="color:var(--muted);margin-top:10px">Mi trayectoria se ha caracterizado por la capacidad de adaptarme a entornos cambiantes, integrando soluciones innovadoras y asegurando la eficiencia operativa. Combino una sólida base técnica con habilidades de gestión y comunicación, lo que me permite trabajar de manera efectiva tanto con equipos técnicos como con áreas de negocio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proyectos -->
+  <section id="work" class="work" aria-labelledby="work-title">
+    <h2 id="work-title">Proyectos</h2>
+    <div class="work-grid">
+      <a class="work-card" href="https://example.com/proyecto-a" target="_blank" rel="noopener noreferrer" aria-label="Abrir Proyecto A en nueva pestaña">
+        <img class="work-media" src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=1400&auto=format&fit=crop" alt="Captura del Proyecto A">
+        <div class="work-body">
+          <h4>Proyecto A</h4>
+          <p style="color:var(--muted)">Rediseño de plataforma educativa con +40% de retención.</p>
+          <p class="work-meta">Métrica: +40% retención · Stack: React, Node</p>
+        </div>
+      </a>
+
+      <a class="work-card" href="https://example.com/proyecto-b" target="_blank" rel="noopener noreferrer" aria-label="Abrir Proyecto B en nueva pestaña">
+        <img class="work-media" src="https://images.unsplash.com/photo-1551281044-8e8d27f1db48?q=80&w=1400&auto=format&fit=crop" alt="Captura del Proyecto B">
+        <div class="work-body">
+          <h4>Proyecto B</h4>
+          <p style="color:var(--muted)">Lanzamiento de producto digital para monetización.</p>
+          <p class="work-meta">Métrica: +25% ingresos · Stack: Next.js, Stripe</p>
+        </div>
+      </a>
+
+      <a class="work-card" href="https://example.com/proyecto-c" target="_blank" rel="noopener noreferrer" aria-label="Abrir Proyecto C en nueva pestaña">
+        <img class="work-media" src="https://images.unsplash.com/photo-1529101091764-c3526daf38fe?q=80&w=1400&auto=format&fit=crop" alt="Captura del Proyecto C">
+        <div class="work-body">
+          <h4>Proyecto C</h4>
+          <p style="color:var(--muted)">Programa de upskilling para líderes técnicos.</p>
+          <p class="work-meta">Métrica: NPS 72 · Stack: LMS, Analytics</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contact" style="padding:36px var(--space)">
+    <div class="card">
+      <h3>Contacto</h3>
+      <div class="contact-grid" role="list">
+        <a class="contact-card" role="listitem"
+           href="mailto:eddy12241@gmail.com"
+           aria-label="Contactar por Email a eddy12241@gmail.com">
+          <p class="contact-title">Email</p>
+          <p class="contact-value">eddy12241@gmail.com</p>
+        </a>
+
+        <a class="contact-card" role="listitem"
+           href="https://wa.me/51987403883?text=Hola%2C%20quisiera%20m%C3%A1s%20informaci%C3%B3n."
+           target="_blank" rel="noopener noreferrer"
+           aria-label="Contactar por WhatsApp al +51 987403883">
+          <p class="contact-title">Whatsapp</p>
+          <p class="contact-value">+51 987403883</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div>© 2025 ER2</div>
+</footer>
+
+<script>
+  // Menú móvil colapsable accesible
+  const toggle = document.querySelector('.nav-toggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  function setMenu(open){
+    toggle.setAttribute('aria-expanded', String(open));
+    mobileMenu.setAttribute('aria-hidden', String(!open));
+    if(open){
+      mobileMenu.removeAttribute('hidden');
+    } else {
+      mobileMenu.setAttribute('hidden', '');
+    }
+  }
+
+  setMenu(false);
+  toggle.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    setMenu(!isOpen);
+  });
+
+  // Cerrar con Escape y devolver foco
+  mobileMenu.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape'){
+      setMenu(false);
+      toggle.focus();
+    }
+  });
+
+  // Cerrar al hacer clic en un enlace
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+</script>
+
+</body>
+</html>
